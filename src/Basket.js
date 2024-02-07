@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
-import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import { useBasket } from './BasketContext';
 import Checkout from './Checkout';
@@ -45,7 +44,7 @@ export default function Basket() {
                 Total: £{total}
             </Typography>
             <Box>
-                <IconButton color="primary" onClick={handleCheckout} aria-label="checkout" disabled={basket && basket.length == 0}>
+                <IconButton color="primary" onClick={handleCheckout} aria-label="checkout" disabled={basket && basket.length === 0}>
                     <Typography>Checkout</Typography>
                 </IconButton>
                 <IconButton color="error" onClick={clearBasket} aria-label="clear basket">

@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import Events from './Events';
 import Basket from './Basket';
-import VerifyEmail from './VerifyEmail';
 
 function App() {
   return (

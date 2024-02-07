@@ -51,7 +51,8 @@ export default function Checkout({ open, setOpen }) {
                     alignItems: 'center',
                     justifyContent: 'center',
                     '& .MuiBox-root': { // Target the inner Box component for styling
-                        width: '400px', // Set the width to 400px
+                        width: '90%', // Set the width to 400px
+                        minWidth: '280px',
                         backgroundColor: 'white',
                         border: '2px solid #000',
                         borderRadius: '8px',
