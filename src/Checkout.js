@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Box, TextField, Button, CircularProgress } from "@mui/material";
+import { Modal, Box, TextField, Button, CircularProgress, Typography } from "@mui/material";
 import axios from "axios";
 
 import VerifyEmail from "./VerifyEmail";
-
 import { useBasket } from "./BasketContext";
 
 export default function Checkout({ open, setOpen }) {
@@ -21,70 +20,84 @@ export default function Checkout({ open, setOpen }) {
             }
         }
     }, [open]);
-    
+
     const handleChangeEmail = () => {
-        setVerifiedEmail(false); // Set verifiedEmail to false to trigger VerifyEmail component again
+        setVerifiedEmail(false); // Reset verifiedEmail to trigger VerifyEmail component
     };
 
     const finishCheckout = async () => {
-        console.log(basket)
+        console.log(basket); // Log the basket content
 
         setIsLoading(true); // Start loading
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/reserve`, {
+                basket,
+                email
+            });
+            const { url } = response.data;
 
-        const response = await axios.post(`${process.env.REACT_APP_API_URL}/reserve`, {
-            basket,
-            email
-        });
-        const { url } = response.data;
-
-        // Redirect to the checkout page
-        window.location.href = url;
+            // Redirect to the checkout page
+            window.location.href = url;
+        } catch (error) {
+            console.error('Checkout failed:', error);
+        } finally {
+            setIsLoading(false); // End loading
+        }
     }
 
     return (
-        <Box>
-            <Modal
-                open={open}
-                onClose={() => setOpen(false)}
-                sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    '& .MuiBox-root': { // Target the inner Box component for styling
-                        width: '90%', // Set the width to 400px
-                        minWidth: '280px',
-                        backgroundColor: 'white',
-                        border: '2px solid #000',
-                        borderRadius: '8px',
-                        boxShadow: 24,
-                        p: 4,
-                    }
-                }}
-            >
-                <div>
-                    {!verifiedEmail && (
-                        <VerifyEmail setVerifiedEmail={setEmail} onSuccess={() => {
-                            setVerifiedEmail(true);
-                        }}/>
-                    )}
-
-                    {verifiedEmail && (
-                        <Box>
-                            <TextField disabled={true} value={email} sx={{ width: '100%' }} />
-                            <Button onClick={handleChangeEmail}>Change Email</Button>
-                            <Button
-                                onClick={finishCheckout}
-                            >
-                                {isLoading ? (
-                                    <CircularProgress />
-                                ) : (
-                                    "Finish Checkout"
-                                )}                                
-                            </Button>
-                        </Box>
-                    )}
-                </div>
-            </Modal>
-        </Box>
+        <Modal
+            open={open}
+            onClose={() => setOpen(false)}
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}
+        >
+            <Box sx={{
+                width: '100%',
+                maxWidth: 400,
+                bgcolor: 'background.paper',
+                border: '1px solid #000',
+                borderRadius: '8px',
+                boxShadow: 24,
+                p: 4,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 2
+            }}>
+                {!verifiedEmail ? (
+                    <VerifyEmail setVerifiedEmail={setEmail} onSuccess={() => setVerifiedEmail(true)} />
+                ) : (
+                    <>
+                        <Typography variant="h6">Email Verified</Typography>
+                        <TextField
+                            disabled
+                            value={email}
+                            fullWidth
+                            variant="outlined"
+                        />
+                        <Button
+                            variant="outlined"
+                            color="secondary"
+                            onClick={handleChangeEmail}
+                            sx={{ my: 1 }}
+                        >
+                            Change Email
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            disabled={isLoading}
+                            onClick={finishCheckout}
+                            fullWidth
+                        >
+                            {isLoading ? <CircularProgress size={24} /> : "Finish Checkout"}
+                        </Button>
+                    </>
+                )}
+            </Box>
+        </Modal>
     );
 }

@@ -47,7 +47,16 @@ function Event({ event }) {
     const dayOfWeek = daysOfWeek[openTime.getDay()];
 
     return (
-        <Card sx={{ m: 2, overflow: 'visible' }}> {/* Adjust max width as needed and ensure overflow is visible for drop shadows or overflow content */}
+        <Card
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                minWidth: 275, // Set minimum width for the card
+                maxWidth: 345, // Set maximum width for the card
+                flex: '1 1 auto', // Allows the card to grow and shrink
+                m: 1, // Margin around each card for spacing
+            }}
+        >
             <CardMedia
                 component="img"
                 height="140"
@@ -63,13 +72,14 @@ function Event({ event }) {
                 </Typography>
                 <Box display="flex" flexDirection="column" alignItems="stretch">
                     {event.tickets.map((ticket, index) => (
-                        <Ticket key={index} ticket={ticket} /> // Pass index as key, consider using a unique ticket identifier if available
+                        <Ticket key={index} ticket={ticket} />
                     ))}
                 </Box>
             </CardContent>
         </Card>
     );
 }
+
 
 function Ticket({ ticket }) {
     const { basket, updateTicketQuantity } = useBasket(); // Assuming this function is added to the context

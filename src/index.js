@@ -5,6 +5,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BasketProvider } from './BasketContext';
 
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Success from './Success';
+
 const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -12,7 +15,12 @@ root.render(
   <React.StrictMode>
     <BasketProvider>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <Router>
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/success" element={<Success />} />
+          </Routes>
+        </Router>
       </QueryClientProvider>
     </BasketProvider>
   </React.StrictMode>
