@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Typography, Box, TextField, CircularProgress } from '@mui/material';
+import { Button, Typography, Box, TextField, CircularProgress, Alert } from '@mui/material';
 import axios from 'axios';
 
 export default function VerifyEmail({ setVerifiedEmail, onSuccess }) {
@@ -8,6 +8,7 @@ export default function VerifyEmail({ setVerifiedEmail, onSuccess }) {
     const [message, setMessage] = useState('');
     const [codeSent, setCodeSent] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(false); // New state for error handling
 
     useEffect(() => {
         if (!codeSent) {
@@ -19,6 +20,7 @@ export default function VerifyEmail({ setVerifiedEmail, onSuccess }) {
 
     const handleSubmitEmail = async () => {
         setIsLoading(true);
+        setError(false); // Reset error state
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/${email}/verify-email`);
             if (response.status === 200) {
@@ -28,12 +30,14 @@ export default function VerifyEmail({ setVerifiedEmail, onSuccess }) {
         } catch (error) {
             console.error('Error submitting email:', error);
             setMessage('Error submitting email. Please try again later.');
+            setError(true);
         }
         setIsLoading(false);
     };
 
     const handleSubmitVerificationCode = async () => {
         setIsLoading(true);
+        setError(false); // Reset error state
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/${email}/verify-email/${verificationCode}`);
             if (response.status === 200) {
@@ -44,6 +48,7 @@ export default function VerifyEmail({ setVerifiedEmail, onSuccess }) {
         } catch (error) {
             console.error('Error submitting verification code:', error);
             setMessage('Error submitting verification code. Please check the code and try again.');
+            setError(true);
         }
         setIsLoading(false);
     };
@@ -57,7 +62,8 @@ export default function VerifyEmail({ setVerifiedEmail, onSuccess }) {
             p: 4,
             gap: 2,
             maxWidth: 400,
-            margin: 'auto'
+            margin: 'auto',
+            '& .MuiTextField-root': { margin: '8px 0' }, // Adjust spacing for all text fields
         }}>
             <Typography variant="h5" gutterBottom>Verify Email</Typography>
             {isLoading ? (
@@ -73,14 +79,14 @@ export default function VerifyEmail({ setVerifiedEmail, onSuccess }) {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 fullWidth
-                                margin="normal"
-                                autoFocus
+                                error={error && !email} // Show error state if needed
+                                helperText={error && !email ? "Please enter a valid email." : ""}
                             />
-                            <Button variant="contained" color="primary" onClick={handleSubmitEmail} disabled={isLoading}>Submit Email</Button>
+                            <Button variant="contained" onClick={handleSubmitEmail} disabled={isLoading || !email}>Send Verification Code</Button>
                         </>
                     ) : (
                         <>
-                            {message && <Typography variant="body1" sx={{ color: 'success.main' }}>{message}</Typography>}
+                            {message && (error ? <Alert severity="error">{message}</Alert> : <Alert severity="success">{message}</Alert>)}
                             <TextField
                                 id="verificationCodeInput"
                                 label="Verification Code"
@@ -88,10 +94,10 @@ export default function VerifyEmail({ setVerifiedEmail, onSuccess }) {
                                 value={verificationCode}
                                 onChange={(e) => setVerificationCode(e.target.value)}
                                 fullWidth
-                                margin="normal"
-                                autoFocus
+                                error={error && !verificationCode}
+                                helperText={error && !verificationCode ? "Please enter the verification code." : ""}
                             />
-                            <Button variant="contained" color="primary" onClick={handleSubmitVerificationCode} disabled={isLoading}>Submit Verification Code</Button>
+                            <Button variant="contained" onClick={handleSubmitVerificationCode} disabled={isLoading || !verificationCode}>Verify Email</Button>
                         </>
                     )}
                 </>
