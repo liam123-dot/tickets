@@ -18,6 +18,7 @@ root.render(
         <Router>
           <Routes>
             <Route path="/" element={<App />} />
+            <Route path="/*" element={<App />} />
             <Route path="/success" element={<Success />} />
           </Routes>
         </Router>
