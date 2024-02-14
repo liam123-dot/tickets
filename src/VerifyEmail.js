@@ -24,7 +24,7 @@ export default function VerifyEmail({ setVerifiedEmail, onSuccess }) {
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/${email}/verify-email`);
             if (response.status === 200) {
-                setMessage('Email submitted successfully. Please check your inbox for the verification code.');
+                setMessage(`Email submitted successfully to ${email}. Please check your inbox and spam for the verification code.`);
                 setCodeSent(true);
             }
         } catch (error) {
