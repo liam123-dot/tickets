@@ -10,7 +10,7 @@ function App() {
         Welcome!
       </Typography>
       <Typography variant="body1" gutterBottom>
-        Please explore the events below and add tickets to your basket. After checkout, you'll receive an email confirmation with details for each ticket purchased, including your FIXR login credentials.
+        Please explore the events below and add tickets to your basket. After checkout, you'll receive an email confirmation with details for each ticket purchased, including your FIXR login credentials/Ticket PDF.
       </Typography>
       <Events />
       <Basket />
